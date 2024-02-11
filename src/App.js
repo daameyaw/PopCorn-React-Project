@@ -82,7 +82,7 @@ export default function App() {
     <>
       <NavBar>
         <Logo />
-        <Search />
+        {/* <Search /> */}
         <Numresults movies={movies} />
       </NavBar>
 
