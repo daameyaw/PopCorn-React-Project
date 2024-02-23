@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating.js";
 import { useMovies } from "./useMovies.js";
 import { useLocalStorageState } from "./useLocalStorageState.js";
+import { useKey } from "./useKey.js";
 
 const KEY = "393d4d1b";
 
@@ -10,9 +11,9 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null);
 
   //custom hook
-  const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
+  const { movies, isLoading, error } = useMovies(query);
 
-  const { watched, setWatched } = useLocalStorageState([]);
+  const [watched, setWatched] = useLocalStorageState([], "watched");
 
   // const [watched, setWatched] = useState(function () {
   //   const storedMovies = localStorage.getItem("watched");
@@ -35,12 +36,12 @@ export default function App() {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
 
-  useEffect(
-    function () {
-      localStorage.setItem("watched", JSON.stringify(watched));
-    },
-    [watched]
-  );
+  // useEffect(
+  //   function () {
+  //     localStorage.setItem("watched", JSON.stringify(watched));
+  //   },
+  //   [watched]
+  // );
 
   return (
     <>
@@ -118,22 +119,29 @@ function Search({ query, setQuery }) {
   //.const variable = useRef(initialValue)
   const inputEL = useRef(null);
 
-  useEffect(
-    function () {
-      function calback(e) {
-        if (e.code === "Enter") {
-          if (document.activeElement === inputEL.current) {
-            return;
-          }
-          inputEL.current.focus();
-          setQuery("");
-        }
-      }
-      document.addEventListener("keydown", calback);
-      return () => document.addEventListener("keydown", calback);
-    },
-    [setQuery]
-  );
+  useKey("Enter", function () {
+    inputEL.current.focus();
+    if (document.activeElement === inputEL.current) {
+      return;
+    }
+    setQuery("");
+  });
+  // useEffect(
+  //   function () {
+  //     function calback(e) {
+  //       if (e.code === "Enter") {
+  //         inputEL.current.focus();
+  //         if (document.activeElement === inputEL.current) {
+  //           return;
+  //         }
+  //         setQuery("");
+  //       }
+  //     }
+  //     document.addEventListener("keydown", calback);
+  //     return () => document.addEventListener("keydown", calback);
+  //   },
+  //   [setQuery]
+  // );
   return (
     <input
       className="search"
@@ -223,20 +231,21 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onCloseMovie();
   }
 
-  useEffect(
-    function () {
-      function calback(e) {
-        if (e.code === "Escape") {
-          onCloseMovie();
-        }
-      }
-      document.addEventListener("keydown", calback);
-      return function () {
-        document.removeEventListener("keydown", calback);
-      };
-    },
-    [onCloseMovie]
-  );
+  useKey("Escape", onCloseMovie);
+  // useEffect(
+  //   function () {
+  //     function calback(e) {
+  //       if (e.code === "Escape") {
+  //         onCloseMovie();
+  //       }
+  //     }
+  //     document.addEventListener("keydown", calback);
+  //     return function () {
+  //       document.removeEventListener("keydown", calback);
+  //     };
+  //   },
+  //   [onCloseMovie]
+  // );
 
   useEffect(
     function () {
