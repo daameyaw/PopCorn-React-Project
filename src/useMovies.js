@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const KEY = "393d4d1b";
 
-export function useMovies(query, calback) {
+export function useMovies(query) {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +43,6 @@ export function useMovies(query, calback) {
         setError("");
         return;
       }
-      calback?.();
       fetchMovies();
 
       return function () {
