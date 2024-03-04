@@ -71,7 +71,7 @@ export default function App() {
             />
           ) : (
             <>
-              <WatchedSummary watched={watched} />
+               <WatchedSummary watched={watched} />
               <WatchedMovieList
                 watched={watched}
                 onDeleteWatched={handleDeleteWatched}
